@@ -46,7 +46,7 @@ class GridHelper extends AppHelper {
 	 *
 	 * @param string $name 
 	 * @param array $url 
-	 * @param array $trailingParams 
+	 * @param array $trailingParams - This is the stuff after /controller/action. Such as /orders/edit/{id}. It's the action parameters in other words
 	 * @return void
 	 * @author Robert Ross
 	 */
