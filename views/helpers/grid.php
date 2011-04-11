@@ -8,6 +8,10 @@ class GridHelper extends AppHelper {
 	private $__columns  = array();
 	private $__actions  = array();
 	
+	private $editableIncluded = false;
+	
+	var $helpers = array('Html');
+	
 	/**
 	 * Adds a column to the grid
 	 *
@@ -24,6 +28,20 @@ class GridHelper extends AppHelper {
 		);
 		
 		$options = array_merge($defaults, $options);
+		
+		//-- If this column is editable we need to make sure we include some extra magic
+		if(!empty($options['editable'])){
+			
+			//-- We need three things to enable editing: editKey, editValuePath, and the model
+			if(isset($options['editable']['editKey']) && isset($options['editable']['editKey']) && isset($options['editable']['editKey'])){
+				if($this->editableIncluded === false){
+					$this->Html->script('/cake_grid/js/cake_grid', array('inline' => false));
+				}
+			}
+			else {
+				$options['editable'] = array();
+			}
+		}
 		
 		$titleSlug = Inflector::slug($title);
 		
@@ -101,7 +119,29 @@ class GridHelper extends AppHelper {
 			$rowColumns = array();
 			
 			foreach($this->__columns as $column){
-				$rowColumns[] = $this->__generateColumn($result, $column);
+				$editableOptions = array();
+				
+				$columnClass = array($column['options']['type']);
+				
+				if(!empty($column['options']['editable'])){
+					$editable = $column['options']['editable'];
+					
+					$editKey      = $editable['editKey'];
+					$editId = array_pop(Set::extract($editable['editId'], $result));
+					
+					$editableOptions[] = 'model="'.$editable['model'].'"';
+					$editableOptions[] = 'edit_key="'.$editKey.'"';
+					$editableOptions[] = 'edit_id="'.$editId.'"';
+					$columnClass[] = 'cg_editable';
+				}
+				
+				
+				$rowColumns[] = array(
+					'value' => $this->__generateColumn($result, $column),
+					'options' => $column['options'],
+					'class' => implode(' ', $columnClass),
+					'editableOptions' => $editableOptions
+				);
 			}
 			
 			$rows[] = $View->element('grid_row', array('plugin' => $this->plugin_name, 'rowColumns' => $rowColumns));
