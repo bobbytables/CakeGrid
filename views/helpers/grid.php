@@ -8,6 +8,11 @@ class GridHelper extends AppHelper {
 	private $__columns  = array();
 	private $__actions  = array();
 	
+	function reset(){
+		$this->__columns = array();
+		$this->__actions = array();
+	}
+	
 	/**
 	 * Adds a column to the grid
 	 *
@@ -104,7 +109,11 @@ class GridHelper extends AppHelper {
 				$rowColumns[] = $this->__generateColumn($result, $column);
 			}
 			
-			$rows[] = $View->element('grid_row', array('plugin' => $this->plugin_name, 'rowColumns' => $rowColumns));
+			$rows[] = $View->element('grid_row', array(
+				'plugin' => $this->plugin_name, 
+				'zebra' => $key % 2 == 0 ? 1 : 0, 
+				'rowColumns' => $rowColumns
+			));
 		}
 		
 		return implode("\n", $rows);
