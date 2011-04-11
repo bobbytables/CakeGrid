@@ -8,6 +8,15 @@ class GridHelper extends AppHelper {
 	private $__columns  = array();
 	private $__actions  = array();
 	
+	/**
+	 * Adds a column to the grid
+	 *
+	 * @param string $title 
+	 * @param string $valuePath 
+	 * @param array $options 
+	 * @return void
+	 * @author Robert Ross
+	 */
 	function addColumn($title, $valuePath, array $options = array()){
 		$defaults = array(
 			'editable' => false,
@@ -27,6 +36,15 @@ class GridHelper extends AppHelper {
 		return $titleSlug;
 	}
 	
+	/**
+	 * Adds an actions column if it doesnt exist, then creates 
+	 *
+	 * @param string $name 
+	 * @param array $url 
+	 * @param array $trailingParams 
+	 * @return void
+	 * @author Robert Ross
+	 */
 	function addAction($name, array $url, array $trailingParams = array()){
 		$this->__actions[$name] = array(
 			'url'  			 => $url,
@@ -40,6 +58,13 @@ class GridHelper extends AppHelper {
 		return true;
 	}
 	
+	/**
+	 * Generates the entire grid including headers and results
+	 *
+	 * @param string $results 
+	 * @return void
+	 * @author Robert Ross
+	 */
 	function generate($results){
 		$View = $this->__view();
 		
@@ -60,6 +85,13 @@ class GridHelper extends AppHelper {
 		return $generated;
 	}
 	
+	/**
+	 * Creates the result set inclusive of the actions column (if applied)
+	 *
+	 * @param string $results 
+	 * @return void
+	 * @author Robert Ross
+	 */
 	function results($results = array()){
 		$rows = array();
 		$View = $this->__view();
@@ -78,16 +110,24 @@ class GridHelper extends AppHelper {
 		return implode("\n", $rows);
 	}
 	
+	/**
+	 * Creates the column based on the type. If there's no type, just a plain ol' string.
+	 *
+	 * @param string $result 
+	 * @param string $column 
+	 * @return void
+	 * @author Robert Ross
+	 */
 	private function __generateColumn($result, $column){
 		$value = array_pop(Set::extract($column['valuePath'], $result));
 		
-		if(isset($column['type']) && $column['type'] == 'date'){
+		if(isset($column['options']['type']) && $column['options']['type'] == 'date'){
 			$value = date('m/d/Y', strtotime($value));
 		}
-		else if(isset($column['type']) && $column['type'] == 'money'){
+		else if(isset($column['options']['type']) && $column['options']['type'] == 'money'){
 			$value = money_format('%n', $value);
 		}
-		else if(isset($column['type']) && $column['type'] == 'actions'){
+		else if(isset($column['options']['type']) && $column['options']['type'] == 'actions'){
 			$View = $this->__view();
 			$actions = array();
 			
@@ -111,6 +151,12 @@ class GridHelper extends AppHelper {
 		return $value;
 	}
 	
+	/**
+	 * Retrieves the view instance from the registry
+	 *
+	 * @return void
+	 * @author Robert Ross
+	 */
 	private function __view() {
 		if (!empty($this->globalParams['viewInstance'])) {
 			$View = $this->globalParams['viewInstance'];
