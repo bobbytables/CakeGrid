@@ -35,7 +35,7 @@ In your controller (or for global usage include it in your AppController) includ
 
 In your view file you can now create grids easily by doing something like this:
 
-    $this->Grid->addColumn('Order Id', '/Order/id', array('editable' => array('editKey' => 'id')));
+    $this->Grid->addColumn('Order Id', '/Order/id');
     $this->Grid->addColumn('Order Date', '/Order/created', array('type' => 'date'));
     $this->Grid->addColumn('Order Amount', '/Order/amount', array('type' => 'money'));
 
