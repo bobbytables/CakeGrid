@@ -11,6 +11,12 @@ class GridHelper extends AppHelper {
 	private $editableIncluded = false;
 	
 	var $helpers = array('Html');
+
+	function reset(){
+		$this->__columns = array();
+		$this->__actions = array();
+	}
+
 	
 	/**
 	 * Adds a column to the grid
@@ -144,7 +150,11 @@ class GridHelper extends AppHelper {
 				);
 			}
 			
-			$rows[] = $View->element('grid_row', array('plugin' => $this->plugin_name, 'rowColumns' => $rowColumns));
+			$rows[] = $View->element('grid_row', array(
+				'plugin' => $this->plugin_name, 
+				'zebra' => $key % 2 == 0 ? 1 : 0, 
+				'rowColumns' => $rowColumns
+			));
 		}
 		
 		return implode("\n", $rows);
