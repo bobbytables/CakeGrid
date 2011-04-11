@@ -24,3 +24,28 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# How to use
+
+Install the plugin (Read the INSTALL file)
+
+In your controller (or for global usage include it in your AppController) include the helper by adding this line:
+
+    var $helpers = array('CakeGrid.Grid');
+
+In your view file you can now create grids easily by doing something like this:
+
+    $this->Grid->addColumn('Order Id', '/Order/id', array('editable' => array('editKey' => 'id')));
+    $this->Grid->addColumn('Order Date', '/Order/created', array('type' => 'date'));
+    $this->Grid->addColumn('Order Amount', '/Order/amount', array('type' => 'money'));
+
+    $this->Grid->addAction('Edit', array('controller' => 'orders', 'action' => 'edit'), array('/Order/id'));
+
+    echo $this->Grid->generate($results);
+    
+This will create a 4 column grid (including actions) for all of your orders or whatever you like!
+CakeGrid uses the Set::extract format found here: http://book.cakephp.org/view/1501/extract
+
+If you're generating multiple tables per view, reset the grid and start over after you've generated your result set:
+
+    $this->Grid->reset();
