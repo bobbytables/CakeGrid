@@ -49,3 +49,17 @@ CakeGrid uses the Set::extract format found here: http://book.cakephp.org/view/1
 If you're generating multiple tables per view, reset the grid and start over after you've generated your result set:
 
     $this->Grid->reset();
+    
+# Actions Column
+
+    @param string $name 
+    @param array $url 
+    @param array $trailingParams
+    
+    $this->Grid->addAction('Edit', array('controller' => 'orders', 'action' => 'edit'), array('/Order/id'));
+    
+## What this does:
+
+The First parameter if the link text (Edit, Delete, Rename, etc..)
+The Second parameter is the controller action that will be handling the action.
+The Third parameter is for the action parameters. So the id of the result, maybe a date? Whatever. Use your imagination.
