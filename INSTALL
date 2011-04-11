@@ -1,0 +1,2 @@
+cd app/plugins
+git submodule add git://github.com/rross0227/CakeGrid.git
