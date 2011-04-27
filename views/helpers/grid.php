@@ -139,7 +139,7 @@ class GridHelper extends AppHelper {
 			
 			$rows[] = $View->element('grid_row', array(
 				'plugin' => $this->plugin_name, 
-				'zebra' => $key % 2 == 0 ? 1 : 0, 
+				'zebra' => $key % 2 == 0 ? 'odd' : 'even', 
 				'rowColumns' => $rowColumns,
 				'options' => $this->__settings
 			));
