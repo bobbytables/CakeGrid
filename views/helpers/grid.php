@@ -8,6 +8,31 @@ class GridHelper extends AppHelper {
 	private $__columns  = array();
 	private $__actions  = array();
 	
+	/**
+	 * Set options for headers and such
+	 *
+	 * @param string $options 
+	 * @return void
+	 * @author Robert Ross
+	 */
+	function options($options){
+		$defaults = array(
+			'class_header' => 'cg_header',
+			'class_row'    => 'cg_row',
+			'class_table'  => 'cg_table'
+		);
+		
+		$options = array_merge($defaults, $options);
+		
+		$this->__settings = $options;
+	}
+	
+	/**
+	 * Resets columns and actions so multiple grids may be created
+	 *
+	 * @return void
+	 * @author Robert Ross
+	 */
 	function reset(){
 		$this->__columns = array();
 		$this->__actions = array();
@@ -25,7 +50,8 @@ class GridHelper extends AppHelper {
 	function addColumn($title, $valuePath, array $options = array()){
 		$defaults = array(
 			'editable' => false,
-			'type' 	   => 'string'
+			'type' 	   => 'string',
+			'element' => false
 		);
 		
 		$options = array_merge($defaults, $options);
@@ -76,7 +102,8 @@ class GridHelper extends AppHelper {
 		//-- Build the columns
 		$headers = $View->element('grid_headers', array(
 			'plugin' => $this->plugin_name, 
-			'headers' => $this->__columns
+			'headers' => $this->__columns,
+			'options' => $this->__settings
 		));
 		
 		$results = $this->results($results);
@@ -84,7 +111,8 @@ class GridHelper extends AppHelper {
 		$generated = $View->element('grid_full', array(
 			'plugin'  => $this->plugin_name,
 			'headers' => $headers,
-			'results' => $results
+			'results' => $results,
+			'options' => $this->__settings
 		));
 		
 		return $generated;
@@ -112,7 +140,8 @@ class GridHelper extends AppHelper {
 			$rows[] = $View->element('grid_row', array(
 				'plugin' => $this->plugin_name, 
 				'zebra' => $key % 2 == 0 ? 1 : 0, 
-				'rowColumns' => $rowColumns
+				'rowColumns' => $rowColumns,
+				'options' => $this->__settings
 			));
 		}
 		
@@ -128,33 +157,43 @@ class GridHelper extends AppHelper {
 	 * @author Robert Ross
 	 */
 	private function __generateColumn($result, $column){
-		$value = array_pop(Set::extract($column['valuePath'], $result));
+		if(!isset($column['valuePath'])){
+			$value = $result;
+		}
+		else {
+			$value = Set::extract($column['valuePath'], $result);
+			$value = array_pop($value);
+		}
 		
-		if(isset($column['options']['type']) && $column['options']['type'] == 'date'){
-			$value = date('m/d/Y', strtotime($value));
-		}
-		else if(isset($column['options']['type']) && $column['options']['type'] == 'money'){
-			$value = money_format('%n', $value);
-		}
-		else if(isset($column['options']['type']) && $column['options']['type'] == 'actions'){
+		if(isset($column['options']['element']) && $column['options']['element'] != false){
 			$View = $this->__view();
-			$actions = array();
-			
-			//-- Need to retrieve the results of the trailing params
-			foreach($this->__actions as $name => $action){
 				
-				//-- Need to find the trailing parameters (id, action type, etc)
-				$trailingParams = array();
-				if(!empty($action['trailingParams'])){
-					foreach($action['trailingParams'] as $key => $param){
-						$trailingParams[$key] = array_pop(Set::extract($param, $result));
+			return $View->element($column['options']['element'], array('result' => $value));
+		} else {
+			if(isset($column['options']['type']) && $column['options']['type'] == 'date'){
+				$value = date('m/d/Y', strtotime($value));
+			} else if(isset($column['options']['type']) && $column['options']['type'] == 'money'){
+				$value = money_format('%n', $value);
+			} else if(isset($column['options']['type']) && $column['options']['type'] == 'actions'){
+				$View = $this->__view();
+				$actions = array();
+			
+				//-- Need to retrieve the results of the trailing params
+				foreach($this->__actions as $name => $action){
+				
+					//-- Need to find the trailing parameters (id, action type, etc)
+					$trailingParams = array();
+					if(!empty($action['trailingParams'])){
+						foreach($action['trailingParams'] as $key => $param){
+							$trailingParams[$key] = array_pop(Set::extract($param, $result));
+						}
 					}
-				}
 				
-				$actions[$name] = Router::url($action['url'] + $trailingParams);
-			}
+					$actions[$name] = Router::url($action['url'] + $trailingParams);
+				}
 			
-			return $View->element('column_actions', array('plugin' => $this->plugin_name, 'actions' => $actions), array('Html'));
+				return $View->element('column_actions', array('plugin' => $this->plugin_name, 'actions' => $actions), array('Html'));
+			}
 		}
 		
 		return $value;

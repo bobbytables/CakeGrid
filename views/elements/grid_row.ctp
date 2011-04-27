@@ -1,4 +1,4 @@
-<tr class="cg_zebra_<?php echo $zebra ?>">
+<tr class="<?php echo $options['class_row'] ?>">
 	<?php foreach($rowColumns as $column): ?>
 	<td>
 		<?php echo $column ?>
