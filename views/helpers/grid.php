@@ -209,7 +209,7 @@ class GridHelper extends AppHelper {
 				//-- Need to retrieve the results of the trailing params
 				foreach($this->__actions as $name => $action){
 					//-- Check to see if the action is supposed to be hidden for this result (set in the controller)
-					if(isset($result['hide_actions']) && is_array($result['hide_actions']) && in_array($name, $result['hide_actions'])){
+					if(isset($result['show_actions']) && is_array($result['show_actions']) && !in_array($name, $result['show_actions'])){
 						continue;
 					}
 					
