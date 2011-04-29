@@ -4,8 +4,32 @@ class GridHelper extends AppHelper {
 	public $name = 'Grid';
 	public $plugin_name = 'cake_grid';
 	
+	/**
+	 * Load html helper for links and such
+	 *
+	 * @var string
+	 */
+	var $helpers = array('Html');
+	
+	/**
+	 * Settings for html classes and such
+	 *
+	 * @var string
+	 */
 	private $__settings = array();
+	
+	/**
+	 * THe columns for the grid
+	 *
+	 * @var string
+	 */
 	private $__columns  = array();
+	
+	/**
+	 * Actions column (if any)
+	 *
+	 * @var string
+	 */
 	private $__actions  = array();
 	
 	/**
@@ -51,7 +75,8 @@ class GridHelper extends AppHelper {
 		$defaults = array(
 			'editable' => false,
 			'type' 	   => 'string',
-			'element' => false
+			'element'  => false,
+			'linkable' => false
 		);
 		
 		$options = array_merge($defaults, $options);
@@ -76,10 +101,11 @@ class GridHelper extends AppHelper {
 	 * @return void
 	 * @author Robert Ross
 	 */
-	function addAction($name, array $url, array $trailingParams = array()){
+	function addAction($name, array $url, array $trailingParams = array(), array $options = array()){
 		$this->__actions[$name] = array(
 			'url'  			 => $url,
-			'trailingParams' => $trailingParams
+			'trailingParams' => $trailingParams,
+			'options'        => $options
 		);
 		
 		if(!isset($this->__columns['actions'])){
@@ -101,7 +127,7 @@ class GridHelper extends AppHelper {
 		
 		//-- Build the columns
 		$headers = $View->element('grid_headers', array(
-			'plugin' => $this->plugin_name, 
+			'plugin'  => $this->plugin_name, 
 			'headers' => $this->__columns,
 			'options' => $this->__settings
 		));
@@ -138,10 +164,10 @@ class GridHelper extends AppHelper {
 			}
 			
 			$rows[] = $View->element('grid_row', array(
-				'plugin' => $this->plugin_name, 
-				'zebra' => $key % 2 == 0 ? 'odd' : 'even', 
+				'plugin'     => $this->plugin_name, 
+				'zebra'      => $key % 2 == 0 ? 'odd' : 'even', 
 				'rowColumns' => $rowColumns,
-				'options' => $this->__settings
+				'options'    => $this->__settings
 			));
 		}
 		
@@ -172,6 +198,8 @@ class GridHelper extends AppHelper {
 		} else {
 			if(isset($column['options']['type']) && $column['options']['type'] == 'date'){
 				$value = date('m/d/Y', strtotime($value));
+			} else if(isset($column['options']['type']) && $column['options']['type'] == 'datetime'){
+				$value = date('m/d/Y h:ia', strtotime($value));
 			} else if(isset($column['options']['type']) && $column['options']['type'] == 'money'){
 				$value = money_format('%n', $value);
 			} else if(isset($column['options']['type']) && $column['options']['type'] == 'actions'){
@@ -180,7 +208,6 @@ class GridHelper extends AppHelper {
 			
 				//-- Need to retrieve the results of the trailing params
 				foreach($this->__actions as $name => $action){
-				
 					//-- Need to find the trailing parameters (id, action type, etc)
 					$trailingParams = array();
 					if(!empty($action['trailingParams'])){
@@ -189,11 +216,32 @@ class GridHelper extends AppHelper {
 						}
 					}
 				
-					$actions[$name] = Router::url($action['url'] + $trailingParams);
+					$actions[$name] = array(
+						'url' => Router::url($action['url'] + $trailingParams),
+						'options' => $action['options']
+					);
 				}
 			
 				return $View->element('column_actions', array('plugin' => $this->plugin_name, 'actions' => $actions), array('Html'));
 			}
+		}
+		
+		//-- Check if it's linkable
+		if(is_array($column['options']['linkable']) && !empty($column['options']['linkable'])){
+			$trailingParams = array();
+			
+			$linkable = $column['options']['linkable'];
+			
+			if(!empty($linkable['trailingParams']) && is_array($linkable['trailingParams'])){
+				foreach($linkable['trailingParams'] as $key => $param){
+					$trailingParams[$key] = array_pop(Set::extract($param, $result));
+				}
+			}
+			
+			$url = $linkable['url'] + $trailingParams;
+			$linkable['options'] = !isset($linkable['options']) ? array() : $linkable['options'];
+			
+			$value = $this->Html->link($value, $url, $linkable['options']);
 		}
 		
 		return $value;
