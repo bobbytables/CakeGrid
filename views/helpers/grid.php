@@ -33,6 +33,13 @@ class GridHelper extends AppHelper {
 	private $__actions  = array();
 	
 	/**
+	 * Totals for columns (if any)
+	 *
+	 * @var string
+	 */
+	private $__totals   = array();
+	
+	/**
 	 * Set options for headers and such
 	 *
 	 * @param string $options 
@@ -76,7 +83,8 @@ class GridHelper extends AppHelper {
 			'editable' => false,
 			'type' 	   => 'string',
 			'element'  => false,
-			'linkable' => false
+			'linkable' => false,
+			'total'    => false
 		);
 		
 		$options = array_merge($defaults, $options);
@@ -88,6 +96,10 @@ class GridHelper extends AppHelper {
 			'valuePath' => $valuePath,
 			'options'   => $options
 		);
+		
+		if($options['total'] == true){
+			$this->__totals[$title] = 0;
+		}
 		
 		return $titleSlug;
 	}
@@ -171,6 +183,32 @@ class GridHelper extends AppHelper {
 			));
 		}
 		
+		if(!empty($this->__totals)){
+			$totalColumns = array();
+			
+			foreach($this->__columns as $column){
+				if(isset($this->__totals[$column['title']])){
+					if($column['options']['type'] == 'money'){
+						$total = money_format("%n", $this->__totals[$column['title']]);
+					} else if($column['options']['type'] == 'number'){
+						$total = number_format($this->__totals[$column['title']]);
+					}
+					
+					$totalColumns[] = 'Total: ' . $total;
+					continue;
+				}
+				
+				$totalColumns[] = '';
+			}
+			
+			$rows[] = $View->element('grid_row', array(
+				'plugin' 	 => $this->plugin_name,
+				'rowColumns' => $totalColumns,
+				'options'    => $this->__settings,
+				'zebra'		 => 'totals'
+			));
+		}
+		
 		return implode("\n", $rows);
 	}
 	
@@ -189,6 +227,11 @@ class GridHelper extends AppHelper {
 		else {
 			$value = Set::extract($column['valuePath'], $result);
 			$value = array_pop($value);
+		}
+		
+		//-- Total things up if needed
+		if(isset($column['options']['total']) && $column['options']['total'] == true){
+			$this->__totals[$column['title']] += $value;
 		}
 		
 		if(isset($column['options']['element']) && $column['options']['element'] != false){
