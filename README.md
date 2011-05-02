@@ -7,7 +7,7 @@
 
     Easy tabular data for CakePHP (cakephp.org)
      -- by Robert Ross (rross@sdreader.com)
-     -- available at http://github.com/############
+     -- available at http://github.com/rross0227
      -- requires CakePHP 1.3.x
 
     Copyright (c) 2011 The Daily Save, LLC.  All rights reserved.
@@ -63,3 +63,19 @@ If you're generating multiple tables per view, reset the grid and start over aft
 The First parameter if the link text (Edit, Delete, Rename, etc..)
 The Second parameter is the controller action that will be handling the action.
 The Third parameter is for the action parameters. So the id of the result, maybe a date? Whatever. Use your imagination.
+
+
+# Advanced Functionality
+
+CakeGrid allows you to make column results linkable. For example, if a column is for the order number, you can make the result a link to the actual order details.
+
+For example:
+
+    $this->Grid->addColumn('ID', '/Order/id', array('linkable' => array(
+    	'url' => array('action' => 'details'),
+    	'trailingParams' => array('/Order/id')
+    )));
+    
+Linkable is the option parameter takes 3 sub options. url, trailingParams, and Html::link options (see http://book.cakephp.org/view/1442/link)
+
+The url could be considered the controller and action, and maybe a named parameter. The trailing parameters is the 
