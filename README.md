@@ -78,4 +78,15 @@ For example:
     
 Linkable is the option parameter takes 3 sub options. url, trailingParams, and Html::link options (see http://book.cakephp.org/view/1442/link)
 
-The url could be considered the controller and action, and maybe a named parameter. The trailing parameters is the 
+The url could be considered the controller and action, and maybe a named parameter. The trailing parameters is the id or whatever you like. It will be pulled from the result.
+__Note:__ Named parameters are not yet supported, but so array('named' => array('id' => '/Order/id')) will not work, but array('id' => '/Order/id') will
+
+## Total Row
+
+To create a "totals" row. You can set a column to total. Only money and numbers will work (obviously).
+
+The syntax is as follows:
+
+    $this->addColumn('Amount', '/Order/amount', array('total' => true));
+    
+This will produce a final row with the totals on it for the column. If the column type is set to money or number, it will format the totals as well.
