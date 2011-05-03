@@ -194,7 +194,7 @@ class GridHelper extends AppHelper {
 						$total = number_format($this->__totals[$column['title']]);
 					}
 					
-					$totalColumns[] = 'Total: ' . $total;
+					$totalColumns[] = $total . ' (total)';
 					continue;
 				}
 				
