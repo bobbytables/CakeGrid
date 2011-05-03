@@ -210,6 +210,7 @@ class GridHelper extends AppHelper {
 			));
 		}
 		
+		//-- Upon review, this if statement is hilarious
 		if(empty($rows) && !empty($this->__settings['empty_message'])){
 			$rows[] = $View->element('grid_empty_row', array(
 				'plugin' => $this->plugin_name,
