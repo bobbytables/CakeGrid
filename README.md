@@ -28,7 +28,8 @@
 # Some notes (Based on our usage at thedailysave.com)
     CakeGrid was created because we create tables constantly. It's annoying how much we make tables. Especially in our admin.
     Our tables are simple to complex, so columns can use elements, or formatting. Doesn't matter.
-    This plugin was created quickly and therefore has no test cases, But is currently in my todo list. <despise>I'll give a cookie to anyone that makes them.</despise>
+    This plugin was created quickly and therefore has no test cases, But is currently in my todo list. 
+    <despise>I'll give a cookie to anyone that makes them.</despise>
 
 # How to use
 
