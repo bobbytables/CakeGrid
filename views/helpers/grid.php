@@ -50,7 +50,8 @@ class GridHelper extends AppHelper {
 		$defaults = array(
 			'class_header' => 'cg_header',
 			'class_row'    => 'cg_row',
-			'class_table'  => 'cg_table'
+			'class_table'  => 'cg_table',
+			'empty_message' => 'No Results'
 		);
 		
 		$options = array_merge($defaults, $options);
@@ -206,6 +207,14 @@ class GridHelper extends AppHelper {
 				'rowColumns' => $totalColumns,
 				'options'    => $this->__settings,
 				'zebra'		 => 'totals'
+			));
+		}
+		
+		if(empty($rows)){
+			$rows[] = $View->element('grid_empty_row', array(
+				'plugin' => $this->plugin_name,
+				'colspan' => sizeof($this->__columns) + (sizeof($this->__actions) ? 1 : 0),
+				'options'    => $this->__settings
 			));
 		}
 		
