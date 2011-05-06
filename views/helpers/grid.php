@@ -40,13 +40,11 @@ class GridHelper extends AppHelper {
 	private $__totals   = array();
 	
 	/**
-	 * Set options for headers and such
+	 * Settings setup
 	 *
-	 * @param string $options 
-	 * @return void
 	 * @author Robert Ross
 	 */
-	function options($options){
+	function __construct(){
 		$defaults = array(
 			'class_header' => 'cg_header',
 			'class_row'    => 'cg_row',
@@ -54,7 +52,18 @@ class GridHelper extends AppHelper {
 			'empty_message' => 'No Results'
 		);
 		
-		$options = array_merge($defaults, $options);
+		$this->__settings = $defaults;
+	}
+	
+	/**
+	 * Set options for headers and such
+	 *
+	 * @param string $options 
+	 * @return void
+	 * @author Robert Ross
+	 */
+	function options($options){
+		$options = array_merge($this->__settings, $options);
 		
 		$this->__settings = $options;
 	}
