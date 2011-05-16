@@ -329,6 +329,41 @@ class GridHelper extends AppHelper {
 	}
 	
 	/**
+	 * Function to return escaped csv data since PHP doesn't have a function out of the box
+	 * Taken from http://php.net/manual/en/function.fputcsv.php comment
+	 *
+	 * @param string $data 
+	 * @return void
+	 * @author Robert Ross
+	 */
+	function csvData($data){
+		$fp  = false;
+		$eol = "\n";
+		
+		if ($fp === false) {
+		    $fp = fopen('php://temp', 'r+');
+		} else {
+		    rewind($fp);
+		}
+
+		if (fputcsv($fp, $data) === false) {
+		    return false;
+		}
+
+		rewind($fp);
+		$csv = fgets($fp);
+
+		if ($eol != PHP_EOL){
+		    $csv = substr($csv, 0, (0 - strlen(PHP_EOL))) . $eol;
+		}
+		
+		//-- For out purpose... we don't want another \n
+		$csv = substr($csv, 0, strlen($eol) * -1);
+		
+		return $csv;
+	}
+	
+	/**
 	 * Retrieves the view instance from the registry
 	 *
 	 * @return void
