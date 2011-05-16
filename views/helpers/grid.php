@@ -40,16 +40,26 @@ class GridHelper extends AppHelper {
 	private $__totals   = array();
 	
 	/**
+	 * Directory where the grid elements are located. Makes for easy switching around.
+	 * Out of the box we'll support table and csv.
+	 *
+	 * @var string
+	 */
+	var $elemDir;
+	
+	
+	/**
 	 * Settings setup
 	 *
 	 * @author Robert Ross
 	 */
 	function __construct(){
 		$defaults = array(
-			'class_header' => 'cg_header',
-			'class_row'    => 'cg_row',
-			'class_table'  => 'cg_table',
-			'empty_message' => 'No Results'
+			'class_header'  => 'cg_header',
+			'class_row'     => 'cg_row',
+			'class_table'   => 'cg_table',
+			'empty_message' => 'No Results',
+			'type'          => 'table' // table,csv currently supported
 		);
 		
 		$this->__settings = $defaults;
@@ -66,6 +76,9 @@ class GridHelper extends AppHelper {
 		$options = array_merge($this->__settings, $options);
 		
 		$this->__settings = $options;
+		
+		//-- Set the directory we'll be looking for elements
+		$this->elemDir = $this->__settings['type'];
 	}
 	
 	/**
@@ -147,16 +160,17 @@ class GridHelper extends AppHelper {
 	function generate($results){
 		$View = $this->__view();
 		
+		$directory = $this->__settings['type'];
+		
 		//-- Build the columns
-		$headers = $View->element('grid_headers', array(
+		$headers = $View->element($this->elemDir . DS . 'grid_headers', array(
 			'plugin'  => $this->plugin_name, 
 			'headers' => $this->__columns,
 			'options' => $this->__settings
 		));
-		
 		$results = $this->results($results);
 		
-		$generated = $View->element('grid_full', array(
+		$generated = $View->element($this->elemDir . DS . 'grid_full', array(
 			'plugin'  => $this->plugin_name,
 			'headers' => $headers,
 			'results' => $results,
@@ -185,7 +199,7 @@ class GridHelper extends AppHelper {
 				$rowColumns[] = $this->__generateColumn($result, $column);
 			}
 			
-			$rows[] = $View->element('grid_row', array(
+			$rows[] = $View->element($this->elemDir . DS . 'grid_row', array(
 				'plugin'     => $this->plugin_name, 
 				'zebra'      => $key % 2 == 0 ? 'odd' : 'even', 
 				'rowColumns' => $rowColumns,
@@ -211,7 +225,7 @@ class GridHelper extends AppHelper {
 				$totalColumns[] = '';
 			}
 			
-			$rows[] = $View->element('grid_row', array(
+			$rows[] = $View->element($this->elemDir . DS . 'grid_row', array(
 				'plugin' 	 => $this->plugin_name,
 				'rowColumns' => $totalColumns,
 				'options'    => $this->__settings,
@@ -221,7 +235,7 @@ class GridHelper extends AppHelper {
 		
 		//-- Upon review, this if statement is hilarious
 		if(empty($rows) && !empty($this->__settings['empty_message'])){
-			$rows[] = $View->element('grid_empty_row', array(
+			$rows[] = $View->element($this->elemDir . DS . 'grid_empty_row', array(
 				'plugin' => $this->plugin_name,
 				'colspan' => sizeof($this->__columns) + (sizeof($this->__actions) ? 1 : 0),
 				'options'    => $this->__settings
@@ -256,7 +270,7 @@ class GridHelper extends AppHelper {
 		if(isset($column['options']['element']) && $column['options']['element'] != false){
 			$View = $this->__view();
 				
-			return $View->element($column['options']['element'], array('result' => $value));
+			return $View->element($this->elemDir . DS . $column['options']['element'], array('result' => $value));
 		} else {
 			if(isset($column['options']['type']) && $column['options']['type'] == 'date'){
 				$value = date('m/d/Y', strtotime($value));
@@ -289,7 +303,7 @@ class GridHelper extends AppHelper {
 					);
 				}
 			
-				return $View->element('column_actions', array('plugin' => $this->plugin_name, 'actions' => $actions), array('Html'));
+				return $View->element($this->elemDir . DS . 'column_actions', array('plugin' => $this->plugin_name, 'actions' => $actions), array('Html'));
 			}
 		}
 		
