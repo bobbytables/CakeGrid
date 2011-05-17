@@ -73,7 +73,15 @@ class GridHelper extends AppHelper {
 	 * @author Robert Ross
 	 */
 	function options($options){
-		$options = array_merge($this->__settings, $options);
+		$defaults = array(
+			'class_header'  => 'cg_header',
+			'class_row'     => 'cg_row',
+			'class_table'   => 'cg_table',
+			'empty_message' => 'No Results',
+			'separator'     => ' '
+		);
+		
+		$options = array_merge($defaults, $options);
 		
 		$this->__settings = $options;
 		
@@ -256,10 +264,35 @@ class GridHelper extends AppHelper {
 	private function __generateColumn($result, $column){
 		if(!isset($column['valuePath'])){
 			$value = $result;
-		}
-		else {
+		} else if(!is_array($column['valuePath'])) {
 			$value = Set::extract($column['valuePath'], $result);
 			$value = array_pop($value);
+		} else if(is_array($column['valuePath'])){
+			$valuePath = $column['valuePath'];
+			
+			if($valuePath['type'] == 'concat'){
+				$separator = isset($valuePath['separator']) ? $valuePath['separator'] : $this->__settings['separator'];
+				unset($valuePath['type'], $valuePath['separator']);
+				
+				$values = array();
+				foreach($valuePath as $path){
+					$extracted = Set::extract($path, $result);
+					$values[] = array_pop($extracted);
+				}
+				
+				$value = implode($separator, $values);
+			} else if($valuePath['type'] == 'format'){
+				$format = $valuePath['with'];
+				unset($valuePath['type'], $valuePath['with']);
+				
+				$values = array($format);
+				foreach($valuePath as $path){
+					$extracted = (array) Set::extract($path, $result);
+					$values[] = array_pop($extracted);
+				}
+				
+				$value = call_user_func_array('sprintf', $values);
+			}
 		}
 		
 		//-- Total things up if needed

@@ -25,7 +25,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Some notes (Based on our usage at thedailysave.com)
+# Some notes
     CakeGrid was created because we create tables constantly. It's annoying how much we make tables. Especially in our admin.
     Our tables are simple to complex, so columns can use elements, or formatting. Doesn't matter.
     This plugin was created quickly and therefore has no test cases, But is currently in my todo list. 
@@ -96,3 +96,39 @@ The syntax is as follows:
     $this->addColumn('Amount', '/Order/amount', array('total' => true));
     
 This will produce a final row with the totals on it for the column. If the column type is set to money or number, it will format the totals as well.
+
+## Concat and Format
+
+CakeGrid allows you to do concatenation and sprintf formatting on your cells. For example, if you have a first and last name but don't want to use CakePHP's virtualFields to merge them together, you can use CakeGrid to do it.
+
+### Concat
+
+    $this->Grid->addColumn('User', array(
+    	'type' => 'concat', 
+    	'/User/first_name',
+    	'/User/last_name'
+    ));
+    
+This will output in the cell the users first and last name together. Concat uses spaces as the default separator but can be changed in 2 ways.
+    
+    // Inline with the column options
+    $this->Grid->addColumn('User', array(
+    	'type' => 'concat', 
+    	'separator' => ' ',
+    	'/User/first_name',
+    	'/User/last_name'
+    ));
+    
+    // Global usage
+    $this->Grid->options(array(
+        'separator' => ' '
+    ));
+    
+### Formatting
+
+    $this->Grid->addColumn('Register Date', array(
+        'type' => 'format',
+        'with' => '%s (%s)',
+        '/User/created',
+        '/User/register_ip'
+    ));
