@@ -132,3 +132,18 @@ This will output in the cell the users first and last name together. Concat uses
         '/User/created',
         '/User/register_ip'
     ));
+
+## Elements
+
+CakeGrid allows the usage of your own elements to be used in cells. This is useful if you're wanting to use a hasMany relationship into a dropdown or something similar.
+When using an element, a valuePath is not used. CakeGrid will pass the entire result of the row to the element.
+
+For Example:
+    $this->Grid->addColumn('Purchases', null, array('element' => 'purchase_list'));
+    
+Whatever the result is for the current row will get passed to the element as $result.
+
+So in your element (purchase_list.ctp for example)
+    <?php foreach($result['Purchase'] as $purchase): ?>
+    <?php endforeach; ?>
+    
