@@ -54,15 +54,7 @@ class GridHelper extends AppHelper {
 	 * @author Robert Ross
 	 */
 	function __construct(){
-		$defaults = array(
-			'class_header'  => 'cg_header',
-			'class_row'     => 'cg_row',
-			'class_table'   => 'cg_table',
-			'empty_message' => 'No Results',
-			'type'          => 'table' // table,csv currently supported
-		);
-		
-		$this->__settings = $defaults;
+		$this->options(array());
 	}
 	
 	/**
@@ -78,7 +70,8 @@ class GridHelper extends AppHelper {
 			'class_row'     => 'cg_row',
 			'class_table'   => 'cg_table',
 			'empty_message' => 'No Results',
-			'separator'     => ' '
+			'separator'     => ' ',
+			'type'          => 'table'
 		);
 		
 		$options = array_merge($defaults, $options);
