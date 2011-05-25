@@ -238,7 +238,7 @@ class GridHelper extends AppHelper {
 					}
 					
 					if($this->__settings['type'] == 'csv'){
-						$total = intval(str_replace(array('$', ','), '', $total));
+						$total = floatval(str_replace(array('$', ','), '', $total));
 						$totalColumns[] = $total;
 						continue;
 					}
