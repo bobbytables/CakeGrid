@@ -163,6 +163,16 @@ class GridHelper extends AppHelper {
 		
 		$directory = $this->__settings['type'];
 		
+		if($this->__settings['type'] == 'csv' && !empty($this->__totals)){
+			array_unshift($this->__columns, array(
+				'title' => '',
+				'valuePath' => '',
+				'options' => array(
+					'type' => 'empty'
+				)
+			));
+		}
+				
 		//-- Build the columns
 		$headers = $View->element($this->elemDir . DS . 'grid_headers', array(
 			'plugin'  => $this->plugin_name, 
@@ -211,12 +221,26 @@ class GridHelper extends AppHelper {
 		if(!empty($this->__totals)){
 			$totalColumns = array();
 			
+			$i = 0;
 			foreach($this->__columns as $column){
+				if($i == 0){
+					$totalColumns[] = 'Total';
+					$i++;
+					continue;
+				}
+				$i++;
+				
 				if(isset($this->__totals[$column['title']])){
 					if($column['options']['type'] == 'money'){
 						$total = money_format("%n", $this->__totals[$column['title']]);
 					} else if($column['options']['type'] == 'number'){
 						$total = number_format($this->__totals[$column['title']]);
+					}
+					
+					if($this->__settings['type'] == 'csv'){
+						$total = intval(str_replace(array('$', ','), '', $total));
+						$totalColumns[] = $total;
+						continue;
 					}
 					
 					$totalColumns[] = $total . ' (total)';
@@ -255,6 +279,10 @@ class GridHelper extends AppHelper {
 	 * @author Robert Ross
 	 */
 	private function __generateColumn($result, $column){
+		if($column['options']['type'] == 'empty'){
+			return '';
+		}
+		
 		if(!isset($column['valuePath'])){
 			$value = $result;
 		} else if(!is_array($column['valuePath'])) {
@@ -302,7 +330,7 @@ class GridHelper extends AppHelper {
 				$value = date('m/d/Y', strtotime($value));
 			} else if(isset($column['options']['type']) && $column['options']['type'] == 'datetime'){
 				$value = date('m/d/Y h:ia', strtotime($value));
-			} else if(isset($column['options']['type']) && $column['options']['type'] == 'money'){
+			} else if(isset($column['options']['type']) && $column['options']['type'] == 'money' && $this->__settings['type'] != 'csv'){
 				$value = money_format('%n', $value);
 			} else if(isset($column['options']['type']) && $column['options']['type'] == 'actions'){
 				$View = $this->__view();
