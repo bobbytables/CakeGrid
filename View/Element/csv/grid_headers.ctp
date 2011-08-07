@@ -1,0 +1,1 @@
+<?php echo $this->Grid->csvData(Set::extract('/title', array_values($headers))); ?>
