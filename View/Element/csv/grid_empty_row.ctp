@@ -1,1 +1,0 @@
-<?php echo $options['empty_message']; ?>

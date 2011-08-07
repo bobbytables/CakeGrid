@@ -1,1 +1,0 @@
-<?php echo $this->Grid->csvData($rowColumns); ?>

@@ -8,7 +8,7 @@
     Easy tabular data for CakePHP (cakephp.org)
      -- by Robert Ross (rross@sdreader.com)
      -- available at http://github.com/rross0227
-     -- requires CakePHP 1.3.x
+     -- requires CakePHP 2 Beta
 
     Copyright (c) 2011 The Daily Save, LLC.  All rights reserved.
 

@@ -2,7 +2,7 @@
 
 class GridHelper extends AppHelper {
 	public $name = 'Grid';
-	public $plugin_name = 'cake_grid';
+	public $plugin_name = 'CakeGrid';
 	
 	/**
 	 * Load html helper for links and such
@@ -53,7 +53,8 @@ class GridHelper extends AppHelper {
 	 *
 	 * @author Robert Ross
 	 */
-	function __construct(){
+	function __construct(View $View, $settings = array()){
+	     parent::__construct( $View,$settings);
 		$this->options(array());
 	}
 	
@@ -159,8 +160,8 @@ class GridHelper extends AppHelper {
 	 * @author Robert Ross
 	 */
 	function generate($results){
-		$View = $this->__view();
-		
+		$View = $this->_View;
+
 		$directory = $this->__settings['type'];
 		
 		if($this->__settings['type'] == 'csv' && !empty($this->__totals)){
@@ -187,7 +188,7 @@ class GridHelper extends AppHelper {
 			'results' => $results,
 			'options' => $this->__settings
 		));
-		
+		pr($generated);
 		return $generated;
 	}
 	
@@ -200,7 +201,7 @@ class GridHelper extends AppHelper {
 	 */
 	function results($results = array()){
 		$rows = array();
-		$View = $this->__view();
+		$View = $this->_View;
 		
 		foreach($results as $key => $result){
 			//-- Loop through columns
@@ -322,9 +323,9 @@ class GridHelper extends AppHelper {
 		}
 		
 		if(isset($column['options']['element']) && $column['options']['element'] != false){
-			$View = $this->__view();
+			$View = $this->_View;
 				
-			return $View->element($this->elemDir . DS . $column['options']['element'], array('result' => $value));
+			return  $View->element($this->elemDir . DS . $column['options']['element'], array('result' => $value));
 		} else {
 			if(isset($column['options']['type']) && $column['options']['type'] == 'date'){
 				$value = date('m/d/Y', strtotime($value));
@@ -333,7 +334,7 @@ class GridHelper extends AppHelper {
 			} else if(isset($column['options']['type']) && $column['options']['type'] == 'money' && $this->__settings['type'] != 'csv'){
 				$value = money_format('%n', $value);
 			} else if(isset($column['options']['type']) && $column['options']['type'] == 'actions'){
-				$View = $this->__view();
+           		$View = $this->_View;
 				$actions = array();
 			
 				//-- Need to retrieve the results of the trailing params
@@ -423,13 +424,13 @@ class GridHelper extends AppHelper {
 	 * @return void
 	 * @author Robert Ross
 	 */
-	private function __view() {
-		if (!empty($this->globalParams['viewInstance'])) {
-			$View = $this->globalParams['viewInstance'];
-		} else {
-			$View = ClassRegistry::getObject('view');
-		}
-		
-		return $View;
-	}
+//	private function __view() {
+//		if (!empty($this->globalParams['viewInstance'])) {
+//			$View = $this->globalParams['viewInstance'];
+//		} else {
+//			$View = ClassRegistry::getObject('view');
+//		}
+//		
+//		return $View;
+//	}
 }
