@@ -194,7 +194,11 @@ class GridHelper extends AppHelper {
         );
         
         
+<<<<<<< HEAD
 
+=======
+		pr($generated);
+>>>>>>> 7a69a7b46819805d69376d506dacd1b2c5ba6b2c
 		return $generated;
 	}
 	
