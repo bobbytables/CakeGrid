@@ -179,16 +179,22 @@ class GridHelper extends AppHelper {
 			'plugin'  => $this->plugin_name, 
 			'headers' => $this->__columns,
 			'options' => $this->__settings
-		));
+		),
+        array(			'plugin'  => $this->plugin_name)
+        );
 		$results = $this->results($results);
 		
 		$generated = $View->element($this->elemDir . DS . 'grid_full', array(
-			'plugin'  => $this->plugin_name,
+            	'plugin'  => $this->plugin_name,
 			'headers' => $headers,
 			'results' => $results,
 			'options' => $this->__settings
-		));
-		pr($generated);
+		),
+        array(			'plugin'  => $this->plugin_name)
+        );
+        
+        
+
 		return $generated;
 	}
 	
@@ -216,7 +222,9 @@ class GridHelper extends AppHelper {
 				'zebra'      => $key % 2 == 0 ? 'odd' : 'even', 
 				'rowColumns' => $rowColumns,
 				'options'    => $this->__settings
-			));
+			),
+            array(	'plugin'  => $this->plugin_name)
+            );
 		}
 		
 		if(!empty($this->__totals)){
@@ -256,7 +264,9 @@ class GridHelper extends AppHelper {
 				'rowColumns' => $totalColumns,
 				'options'    => $this->__settings,
 				'zebra'		 => 'totals'
-			));
+			),
+            array(	'plugin'  => $this->plugin_name)
+            );
 		}
 		
 		//-- Upon review, this if statement is hilarious
@@ -265,7 +275,8 @@ class GridHelper extends AppHelper {
 				'plugin' => $this->plugin_name,
 				'colspan' => sizeof($this->__columns) + (sizeof($this->__actions) ? 1 : 0),
 				'options'    => $this->__settings
-			));
+			),
+            array(	'plugin'  => $this->plugin_name));
 		}
 		
 		return implode("\n", $rows);
@@ -358,7 +369,7 @@ class GridHelper extends AppHelper {
 					);
 				}
 			
-				return $View->element($this->elemDir . DS . 'column_actions', array('plugin' => $this->plugin_name, 'actions' => $actions), array('Html'));
+				return $View->element($this->elemDir . DS . 'column_actions', array( 'actions' => $actions), array('Html','plugin' => $this->plugin_name,));
 			}
 		}
 		
