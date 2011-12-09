@@ -133,6 +133,13 @@ This will output in the cell the users first and last name together. Concat uses
         '/User/register_ip'
     ));
 
+## Paginate
+By setting paginate as true you instruct CakeGrid to use the Paginator::sort method to create the headers of your table
+
+    $this->Grid->addColumn('User', '/User/name', array('paginate'=>true));
+
+CakeGrid won't add pagination links at the end of the table, you should add them yourself if you need them.
+
 ## Elements
 
 CakeGrid allows the usage of your own elements to be used in cells. This is useful if you're wanting to use a hasMany relationship into a dropdown or something similar.

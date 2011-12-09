@@ -109,7 +109,8 @@ class GridHelper extends AppHelper {
 			'type' 	   => 'string',
 			'element'  => false,
 			'linkable' => false,
-			'total'    => false
+			'total'    => false,
+			'paginate' => false
 		);
 		
 		$options = array_merge($defaults, $options);
