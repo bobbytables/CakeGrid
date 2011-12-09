@@ -8,11 +8,7 @@
     Easy tabular data for CakePHP (cakephp.org)
      -- by Robert Ross (rross@sdreader.com)
      -- available at http://github.com/rross0227
-<<<<<<< HEAD
-     -- requires CakePHP 2.x beta
-=======
-     -- requires CakePHP 2 Beta
->>>>>>> CakePHP2
+     -- requires CakePHP 2.x
 
     Copyright (c) 2011 The Daily Save, LLC.  All rights reserved.
 
@@ -51,7 +47,7 @@ In your view file you can now create grids easily by doing something like this:
 
     $this->Grid->addAction('Edit', array('controller' => 'orders', 'action' => 'edit'), array('/Order/id'));
 
-    echo $this->Grid->generate($results);
+    echo $this->Grid->generate($orders);
     
 This will create a 4 column grid (including actions) for all of your orders or whatever you like!
 CakeGrid uses the Set::extract format found here: http://book.cakephp.org/view/1501/extract
